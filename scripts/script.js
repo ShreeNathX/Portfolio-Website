@@ -15,12 +15,6 @@ const hamburger = document.getElementById('hamburger');
 const navMenu   = document.getElementById('navMenu');
 const navLinks  = document.querySelectorAll('.nav-link');
 
-// Move navMenu to <body> so it escapes the navbar's stacking context entirely
-// Without this, nav z-index is always trapped inside the <nav> parent
-if (navMenu && navbar) {
-  document.body.appendChild(navMenu);
-}
-
 function openDrawer() {
   hamburger.classList.add('active');
   navMenu.classList.add('active');

@@ -57,15 +57,22 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 3px; }
 
-/* ============================================ NAVBAR */
+/* ============================================ NAVBAR
+   The navbar itself has NO stacking context (no transform, no filter, no isolation).
+   z-index: auto means it doesn't create a stacking context — only its children do.
+   This is critical: if navbar creates a stacking context, the menu (its child) is
+   forever trapped inside it and can never paint above other page elements.
+============================================ */
 .navbar {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   height: var(--nav-height);
-  display: flex; align-items: center;
+  display: flex;
+  align-items: center;
   background: transparent;
   border-bottom: 1px solid transparent;
   transition: background var(--transition), border-bottom var(--transition);
+  /* NO z-index here — z-index: auto — no stacking context created */
 }
 .navbar.scrolled {
   background: rgba(8,12,20,0.97);
@@ -75,29 +82,41 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 }
 .nav-container {
   max-width: 1200px; width: 100%; margin: 0 auto;
-  padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  /* NO z-index, NO transform, NO isolation */
 }
 .nav-brand {
   font-weight: 800; font-size: 1.1rem; letter-spacing: 0.08em;
   background: var(--accent-gradient);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  position: relative; z-index: 200;
 }
 
-/* Desktop: nav-menu sits inline */
-.nav-menu { display: flex; align-items: center; gap: 0.25rem; }
+/* Desktop menu — normal inline flex */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
 
 .nav-link {
   font-weight: 500; font-size: 0.9rem; color: var(--text-secondary);
   padding: 0.5rem 1rem; border-radius: 8px;
   transition: color var(--transition), background var(--transition);
 }
-.nav-link:hover, .nav-link.active { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+.nav-link:hover,
+.nav-link.active { color: var(--text-primary); background: rgba(255,255,255,0.06); }
 .nav-link.active { color: var(--accent-cyan); }
 
 .hamburger {
-  display: none; flex-direction: column; gap: 5px;
-  cursor: pointer; padding: 4px;
-  position: relative; z-index: 200;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  position: relative;
+  z-index: 10001; /* above the drawer */
 }
 .hamburger span {
   display: block; width: 24px; height: 2px;
@@ -241,10 +260,10 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 }
 @keyframes notifIn {
   from { transform: translateX(120%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(0); opacity: 1; }
 }
 @keyframes notifOut {
-  from { transform: translateX(0);    opacity: 1; }
+  from { transform: translateX(0); opacity: 1; }
   to   { transform: translateX(120%); opacity: 0; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -274,7 +293,13 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 @media (max-width: 768px) {
   .hamburger { display: flex; }
 
-  /* nav-menu is moved to <body> by script.js, so z-index is now global */
+  /*
+    KEY FIX: The drawer uses position:fixed which is relative to the viewport,
+    NOT to any parent. So z-index on a fixed element is always in the root
+    stacking context — it DOES NOT get trapped by the parent navbar.
+    We only need to make sure .navbar itself does NOT set z-index (it doesn't above).
+    No transform, no isolation, no will-change needed — just position:fixed + z-index.
+  */
   .nav-menu {
     position: fixed;
     top: 0;
@@ -282,7 +307,7 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
     bottom: 0;
     width: 75%;
     max-width: 280px;
-    z-index: 9999;
+    z-index: 10000;
     background: #080c14;
     border-left: 1px solid rgba(139,92,246,0.3);
     flex-direction: column;
