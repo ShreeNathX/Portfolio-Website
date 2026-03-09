@@ -25,10 +25,7 @@ if (hamburger) {
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
     navMenu.classList.toggle('active');
-    const isOpen = navMenu.classList.contains('active');
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    // Add/remove class so CSS can neutralise any overflow:hidden stacking contexts
-    document.body.classList.toggle('menu-open', isOpen);
+    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
   });
 }
 
@@ -37,7 +34,6 @@ navLinks.forEach(link => {
     hamburger?.classList.remove('active');
     navMenu?.classList.remove('active');
     document.body.style.overflow = '';
-    document.body.classList.remove('menu-open');
   });
 });
 

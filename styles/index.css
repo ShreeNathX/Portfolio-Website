@@ -329,17 +329,7 @@
 }
 @media (max-width: 768px) {
   .hero-title { font-size: clamp(1.8rem, 7vw, 3.2rem); white-space: normal; }
-  /* Fix: wrap stats into 2×2 grid — Projects+Specializations row 1, Certifications+Technologies row 2 */
-  .hero-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem 1rem;
-    width: 100%;
-    max-width: 360px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .stat-item { text-align: center; }
+  .hero-stats { gap: 1.5rem; }
   .form-row { grid-template-columns: 1fr; }
   .section-header { flex-direction: column; align-items: flex-start; }
   .hero-orb { display: none; }
