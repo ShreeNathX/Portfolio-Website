@@ -21,20 +21,39 @@ window.addEventListener('scroll', () => {
   revealOnScroll();
 }, { passive: true });
 
+// Shared helper so every close path is consistent.
+function closeNavMenu() {
+  hamburger?.classList.remove('active');
+  navMenu?.classList.remove('active');
+  navbar?.classList.remove('menu-open'); // re-enable backdrop-filter on navbar
+  document.body.style.overflow = '';
+}
+
 if (hamburger) {
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
     navMenu.classList.toggle('active');
-    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    const isOpen = navMenu.classList.contains('active');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    // Toggle .menu-open so CSS can strip backdrop-filter from .navbar.scrolled.
+    // backdrop-filter creates a new fixed-position containing block, which
+    // collapses .nav-menu (position:fixed) to zero height when scrolled.
+    navbar.classList.toggle('menu-open', isOpen);
   });
 }
 
 navLinks.forEach(link => {
-  link.addEventListener('click', () => {
-    hamburger?.classList.remove('active');
-    navMenu?.classList.remove('active');
-    document.body.style.overflow = '';
-  });
+  link.addEventListener('click', () => closeNavMenu());
+});
+
+// Close menu when tapping the dark overlay background (not a link).
+navMenu?.addEventListener('click', (e) => {
+  if (e.target === navMenu) closeNavMenu();
+});
+
+// Close menu on Escape key so the page never stays "stuck" with scroll locked.
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeNavMenu();
 });
 
 // ---- Active Nav Link (home page scroll) ----

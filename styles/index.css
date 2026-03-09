@@ -328,11 +328,29 @@
   .about-visual { display: none; }
 }
 @media (max-width: 768px) {
+  /* Fix: hero was using align-items:center + overflow:hidden which caused the
+     content to be vertically centered then clipped by the fixed navbar on
+     short/landscape screens. Switch to flex-start with explicit top padding
+     so content always clears the navbar, and move overflow:hidden to the
+     background layer so the decorative grid/mesh still gets clipped. */
+  .hero {
+    align-items: flex-start;
+    padding-top: calc(var(--nav-height) + 2.5rem);
+    padding-bottom: 5rem; /* room for scroll indicator */
+    overflow: visible;
+  }
+  .hero-bg { overflow: hidden; } /* keep bg clipped to hero bounds */
   .hero-title { font-size: clamp(1.8rem, 7vw, 3.2rem); white-space: normal; }
-  .hero-stats { gap: 1.5rem; }
+  /* Fix: 4 stat items in one row overflow on narrow screens — wrap to 2×2 */
+  .hero-stats { gap: 1.5rem 2rem; flex-wrap: wrap; justify-content: center; }
+  .stat-item { flex: 1 1 calc(50% - 1rem); }
   .form-row { grid-template-columns: 1fr; }
   .section-header { flex-direction: column; align-items: flex-start; }
   .hero-orb { display: none; }
+}
+@media (max-width: 480px) {
+  /* Reduce contact form card internal padding on very small screens */
+  .contact-form-card { padding: 1.5rem 1rem; }
 }
 
 /* ============================================
