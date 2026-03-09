@@ -10,20 +10,10 @@ window.addEventListener('load', () => {
 });
 
 // ---- Navbar ----
-const navbar    = document.getElementById('navbar');
+const navbar  = document.getElementById('navbar');
 const hamburger = document.getElementById('hamburger');
 const navMenu   = document.getElementById('navMenu');
 const navLinks  = document.querySelectorAll('.nav-link');
-
-function openDrawer() {
-  hamburger.classList.add('active');
-  navMenu.classList.add('active');
-}
-
-function closeDrawer() {
-  hamburger.classList.remove('active');
-  navMenu.classList.remove('active');
-}
 
 window.addEventListener('scroll', () => {
   navbar.classList.toggle('scrolled', window.scrollY > 40);
@@ -32,27 +22,22 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 if (hamburger) {
-  hamburger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    navMenu.classList.contains('active') ? closeDrawer() : openDrawer();
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
   });
 }
 
-// Close when clicking outside
-document.addEventListener('click', (e) => {
-  if (navMenu && navMenu.classList.contains('active')) {
-    if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
-      closeDrawer();
-    }
-  }
-});
-
-// Close when a nav link is clicked
 navLinks.forEach(link => {
-  link.addEventListener('click', closeDrawer);
+  link.addEventListener('click', () => {
+    hamburger?.classList.remove('active');
+    navMenu?.classList.remove('active');
+    document.body.style.overflow = '';
+  });
 });
 
-// ---- Active Nav Link ----
+// ---- Active Nav Link (home page scroll) ----
 function updateActiveNavLink() {
   const sections = document.querySelectorAll('section[id]');
   if (!sections.length) return;
@@ -81,7 +66,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ---- Scroll Reveal ----
+// ---- Scroll Reveal — supports .reveal, .reveal-left, .reveal-right, .reveal-scale ----
 function revealOnScroll() {
   const selectors = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
   const els = document.querySelectorAll(`${selectors}:not(.visible)`);
@@ -90,7 +75,7 @@ function revealOnScroll() {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight - 70) {
       setTimeout(() => el.classList.add('visible'), delay);
-      delay = Math.min(delay + 55, 350);
+      delay = Math.min(delay + 55, 350); // stagger but cap at 350ms
     }
   });
 }
@@ -100,8 +85,10 @@ let countersStarted = false;
 function initCounters() {
   const counters = document.querySelectorAll('.stat-number[data-target]');
   if (!counters.length || countersStarted) return;
+
   const statsSection = document.querySelector('.hero-stats');
   if (!statsSection) return;
+
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !countersStarted) {
       countersStarted = true;
@@ -109,6 +96,7 @@ function initCounters() {
       observer.disconnect();
     }
   }, { threshold: 0.5 });
+
   observer.observe(statsSection);
 }
 
@@ -120,6 +108,7 @@ function animateCounter(el) {
   const steps = Math.floor(duration / step);
   let current = 0;
   const increment = target / steps;
+
   const timer = setInterval(() => {
     current = Math.min(current + increment, target);
     el.textContent = Math.floor(current) + (current >= target ? suffix : '');
@@ -131,7 +120,7 @@ function animateCounter(el) {
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('footerYear');
   if (el) el.innerHTML = `&copy; ${new Date().getFullYear()} Shree Nath Mahato. All rights reserved.`;
-  revealOnScroll();
+  revealOnScroll(); // run once on DOM ready
 });
 
 // ---- Notification utility ----
@@ -155,7 +144,7 @@ function dismissNotif(n) {
   setTimeout(() => n?.remove(), 320);
 }
 
-// ---- Card tilt on hover ----
+// ---- Card tilt on hover (subtle) ----
 document.querySelectorAll('.project-card, .cert-card, .proj-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
@@ -163,5 +152,7 @@ document.querySelectorAll('.project-card, .cert-card, .proj-card').forEach(card 
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
     card.style.transform = `translateY(-6px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`;
   });
-  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
 });
