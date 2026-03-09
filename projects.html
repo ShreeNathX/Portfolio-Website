@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Shree Nath Mahato</title>
+  <meta name="description" content="Explore data science and analytics projects by Shree Nath Mahato — dashboards, ML models, EDA, and more.">
+  <meta property="og:title" content="Projects | Shree Nath Mahato">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="./styles/styles.css">
+  <link rel="stylesheet" href="./styles/projects.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">SNM</div>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="./index.html" class="nav-link">Home</a></li>
+        <li><a href="./about.html" class="nav-link">About</a></li>
+        <li><a href="./projects.html" class="nav-link active">Projects</a></li>
+        <li><a href="./certifications.html" class="nav-link">Certifications</a></li>
+        <li><a href="./index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HEADER ===== -->
+  <section class="page-header">
+    <h1>PROJECTS</h1>
+    <p>Data science and analytics work that creates real-world impact</p>
+  </section>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <!-- Filter Bar -->
+    <div class="filter-bar reveal" id="filterBar">
+      <button class="filter-btn active" data-filter="all">All Projects</button>
+      <button class="filter-btn" data-filter="analytics">Analytics</button>
+      <button class="filter-btn" data-filter="ml">Machine Learning</button>
+      <button class="filter-btn" data-filter="visualization">Visualization</button>
+      <button class="filter-btn" data-filter="sql">SQL</button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid" id="projectsGrid">
+
+      <div class="proj-card reveal" data-category="analytics visualization">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#4c1d95,#1e40af);">
+          <img src="./assets/Projects/Sales Analytics Dashboard.png" alt="Sales Analytics Dashboard" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#4c1d95,#1e40af);">01</div>
+        </div>
+        <div class="proj-body">
+          <h3>Sales Analytics Dashboard</h3>
+          <p>Interactive Power BI dashboard visualizing KPIs, revenue trends, customer segmentation, and regional performance for e-commerce data across multiple time periods.</p>
+          <div class="proj-tags">
+            <span class="badge">Power BI</span>
+            <span class="badge">SQL</span>
+            <span class="badge">DAX</span>
+            <span class="badge">Excel</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="https://public.tableau.com/app/profile/shreenathmahato/viz/OnlineRetailDashboard_17697932511960/Dashboard1" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal" data-category="ml">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#065f46,#1e3a5f);">
+          <img src="./assets/Projects/" alt="Customer Churn Prediction" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#065f46,#1e3a5f);">02</div>
+        </div>
+        <div class="proj-body">
+          <h3>Customer Churn Prediction</h3>
+          <p>ML pipeline achieving 87% accuracy predicting customer churn. Includes feature engineering, model comparison (Random Forest, XGBoost, Logistic Regression), and SHAP explainability.</p>
+          <div class="proj-tags">
+            <span class="badge">Python</span>
+            <span class="badge">Scikit-learn</span>
+            <span class="badge">Pandas</span>
+            <span class="badge">XGBoost</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal" data-category="analytics visualization">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#7c2d12,#1e1b4b);">
+          <img src="./assets/Projects/" alt="COVID-19 Data Analysis" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#7c2d12,#1e1b4b);">03</div>
+        </div>
+        <div class="proj-body">
+          <h3>COVID-19 Data Analysis</h3>
+          <p>Comprehensive EDA of global COVID-19 trends — case trajectories, mortality rates, vaccination progress. Interactive charts built with Plotly and Seaborn.</p>
+          <div class="proj-tags">
+            <span class="badge">Python</span>
+            <span class="badge">Matplotlib</span>
+            <span class="badge">Seaborn</span>
+            <span class="badge">Plotly</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Notebook</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal" data-category="sql analytics">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#164e63,#134e4a);">
+          <img src="./assets/Projects/" alt="E-Commerce SQL Analytics" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#164e63,#134e4a);">04</div>
+        </div>
+        <div class="proj-body">
+          <h3>E-Commerce SQL Analytics</h3>
+          <p>End-to-end SQL analysis on a 500k-row e-commerce dataset. Window functions, CTEs, cohort analysis, and customer lifetime value calculations.</p>
+          <div class="proj-tags">
+            <span class="badge">SQL</span>
+            <span class="badge">PostgreSQL</span>
+            <span class="badge">Python</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> Report</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal" data-category="ml visualization">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#3b0764,#1e3a5f);">
+          <img src="./assets/Projects/" alt="House Price Prediction" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#3b0764,#1e3a5f);">05</div>
+        </div>
+        <div class="proj-body">
+          <h3>House Price Prediction</h3>
+          <p>Regression model predicting house prices with R² of 0.92. Covers data cleaning, feature selection, polynomial features, Ridge/Lasso regularization, and hyperparameter tuning.</p>
+          <div class="proj-tags">
+            <span class="badge">Python</span>
+            <span class="badge">Scikit-learn</span>
+            <span class="badge">NumPy</span>
+            <span class="badge">Jupyter</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Notebook</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal" data-category="analytics visualization sql">
+        <div class="proj-thumb" style="background:linear-gradient(135deg,#052e16,#1e3a5f);">
+          <img src="./assets/Projects/" alt="HR Analytics Dashboard" loading="lazy" onerror="this.style.display='none'">
+          <div class="proj-thumb-placeholder" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#052e16,#1e3a5f);">06</div>
+        </div>
+        <div class="proj-body">
+          <h3>HR Analytics Dashboard</h3>
+          <p>Tableau dashboard tracking employee attrition, performance metrics, headcount trends, and department KPIs. Includes drill-down filters and executive summary view.</p>
+          <div class="proj-tags">
+            <span class="badge">Tableau</span>
+            <span class="badge">SQL</span>
+            <span class="badge">Python</span>
+          </div>
+          <div class="proj-links">
+            <a href="#" class="proj-link code" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="#" class="proj-link demo" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /projects-grid -->
+
+    <!-- Open Source -->
+    <div class="oss-section reveal">
+      <h2>Open Source Contributions</h2>
+      <p>I actively contribute to the developer and data science community through code, documentation, and knowledge sharing.</p>
+      <div class="oss-grid">
+        <div class="oss-card reveal">
+          <div class="oss-icon"><i class="fas fa-tools"></i></div>
+          <h3>Community Tools</h3>
+          <p>Contributing utilities and helper libraries that improve data analytics workflows across the ecosystem.</p>
+        </div>
+        <div class="oss-card reveal">
+          <div class="oss-icon"><i class="fas fa-book-open"></i></div>
+          <h3>Documentation</h3>
+          <p>Writing clear, comprehensive documentation to help others understand and use open source data science tools.</p>
+        </div>
+        <div class="oss-card reveal">
+          <div class="oss-icon"><i class="fas fa-bug"></i></div>
+          <h3>Bug Fixes</h3>
+          <p>Identifying and resolving bugs in popular repositories to improve stability and user experience.</p>
+        </div>
+        <div class="oss-card reveal">
+          <div class="oss-icon"><i class="fas fa-star"></i></div>
+          <h3>Feature Development</h3>
+          <p>Implementing new features based on community feedback and project roadmaps in data tooling projects.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner reveal">
+      <h2>Have a Project in Mind?</h2>
+      <p>Let's collaborate and bring your data ideas to life</p>
+      <a href="./index.html#contact" class="btn-primary">
+        <i class="fas fa-rocket"></i> Start a Project
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-brand-name">SHREE NATH MAHATO</div>
+        <p>Data Analyst & aspiring Data Scientist.</p>
+        <p style="margin-top:0.5rem;"><a href="mailto:shreenath.ventures17@gmail.com">shreenath.ventures17@gmail.com</a></p>
+        <div class="social-links" style="margin-top:1.25rem;">
+          <a href="https://www.linkedin.com/in/shree-nath-mahato" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://www.github.com/ShreeNathX" aria-label="GitHub" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+          <a href="#" aria-label="Twitter" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html">About</a></li>
+          <li><a href="./projects.html">Projects</a></li>
+          <li><a href="./certifications.html">Certifications</a></li>
+          <li><a href="./index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <ul>
+          <li><a href="https://www.linkedin.com/in/shree-nath-mahato" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://www.github.com/ShreeNathX" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="mailto:shreenath.ventures17@gmail.com">Email</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p id="footerYear">&copy; 2024 Shree Nath Mahato. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./scripts/script.js"></script>
+  <script src="./scripts/projects.js"></script>
+</body>
+</html>
