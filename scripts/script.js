@@ -10,10 +10,20 @@ window.addEventListener('load', () => {
 });
 
 // ---- Navbar ----
-const navbar  = document.getElementById('navbar');
+const navbar    = document.getElementById('navbar');
 const hamburger = document.getElementById('hamburger');
 const navMenu   = document.getElementById('navMenu');
 const navLinks  = document.querySelectorAll('.nav-link');
+
+function openDrawer() {
+  hamburger.classList.add('active');
+  navMenu.classList.add('active');
+}
+
+function closeDrawer() {
+  hamburger.classList.remove('active');
+  navMenu.classList.remove('active');
+}
 
 window.addEventListener('scroll', () => {
   navbar.classList.toggle('scrolled', window.scrollY > 40);
@@ -22,19 +32,24 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 if (hamburger) {
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navMenu.classList.contains('active') ? closeDrawer() : openDrawer();
   });
 }
 
+// Close drawer when clicking anywhere outside the menu
+document.addEventListener('click', (e) => {
+  if (navMenu && navMenu.classList.contains('active')) {
+    if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+      closeDrawer();
+    }
+  }
+});
+
+// Close drawer when a nav link is clicked
 navLinks.forEach(link => {
-  link.addEventListener('click', () => {
-    hamburger?.classList.remove('active');
-    navMenu?.classList.remove('active');
-    document.body.style.overflow = '';
-  });
+  link.addEventListener('click', closeDrawer);
 });
 
 // ---- Active Nav Link (home page scroll) ----
@@ -66,7 +81,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ---- Scroll Reveal — supports .reveal, .reveal-left, .reveal-right, .reveal-scale ----
+// ---- Scroll Reveal ----
 function revealOnScroll() {
   const selectors = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
   const els = document.querySelectorAll(`${selectors}:not(.visible)`);
@@ -75,7 +90,7 @@ function revealOnScroll() {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight - 70) {
       setTimeout(() => el.classList.add('visible'), delay);
-      delay = Math.min(delay + 55, 350); // stagger but cap at 350ms
+      delay = Math.min(delay + 55, 350);
     }
   });
 }
@@ -120,7 +135,7 @@ function animateCounter(el) {
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('footerYear');
   if (el) el.innerHTML = `&copy; ${new Date().getFullYear()} Shree Nath Mahato. All rights reserved.`;
-  revealOnScroll(); // run once on DOM ready
+  revealOnScroll();
 });
 
 // ---- Notification utility ----
