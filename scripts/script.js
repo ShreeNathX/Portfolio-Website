@@ -15,6 +15,12 @@ const hamburger = document.getElementById('hamburger');
 const navMenu   = document.getElementById('navMenu');
 const navLinks  = document.querySelectorAll('.nav-link');
 
+// Move navMenu to <body> so it escapes the navbar's stacking context entirely
+// Without this, nav z-index is always trapped inside the <nav> parent
+if (navMenu && navbar) {
+  document.body.appendChild(navMenu);
+}
+
 function openDrawer() {
   hamburger.classList.add('active');
   navMenu.classList.add('active');
@@ -38,7 +44,7 @@ if (hamburger) {
   });
 }
 
-// Close drawer when clicking anywhere outside the menu
+// Close when clicking outside
 document.addEventListener('click', (e) => {
   if (navMenu && navMenu.classList.contains('active')) {
     if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
@@ -47,12 +53,12 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Close drawer when a nav link is clicked
+// Close when a nav link is clicked
 navLinks.forEach(link => {
   link.addEventListener('click', closeDrawer);
 });
 
-// ---- Active Nav Link (home page scroll) ----
+// ---- Active Nav Link ----
 function updateActiveNavLink() {
   const sections = document.querySelectorAll('section[id]');
   if (!sections.length) return;
@@ -100,10 +106,8 @@ let countersStarted = false;
 function initCounters() {
   const counters = document.querySelectorAll('.stat-number[data-target]');
   if (!counters.length || countersStarted) return;
-
   const statsSection = document.querySelector('.hero-stats');
   if (!statsSection) return;
-
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !countersStarted) {
       countersStarted = true;
@@ -111,7 +115,6 @@ function initCounters() {
       observer.disconnect();
     }
   }, { threshold: 0.5 });
-
   observer.observe(statsSection);
 }
 
@@ -123,7 +126,6 @@ function animateCounter(el) {
   const steps = Math.floor(duration / step);
   let current = 0;
   const increment = target / steps;
-
   const timer = setInterval(() => {
     current = Math.min(current + increment, target);
     el.textContent = Math.floor(current) + (current >= target ? suffix : '');
@@ -159,7 +161,7 @@ function dismissNotif(n) {
   setTimeout(() => n?.remove(), 320);
 }
 
-// ---- Card tilt on hover (subtle) ----
+// ---- Card tilt on hover ----
 document.querySelectorAll('.project-card, .cert-card, .proj-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
@@ -167,7 +169,5 @@ document.querySelectorAll('.project-card, .cert-card, .proj-card').forEach(card 
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
     card.style.transform = `translateY(-6px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`;
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
-  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });

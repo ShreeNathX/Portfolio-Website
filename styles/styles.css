@@ -82,7 +82,10 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
   background: var(--accent-gradient);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
+
+/* Desktop: nav-menu sits inline */
 .nav-menu { display: flex; align-items: center; gap: 0.25rem; }
+
 .nav-link {
   font-weight: 500; font-size: 0.9rem; color: var(--text-secondary);
   padding: 0.5rem 1rem; border-radius: 8px;
@@ -94,7 +97,7 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 .hamburger {
   display: none; flex-direction: column; gap: 5px;
   cursor: pointer; padding: 4px;
-  position: relative; z-index: 10000;
+  position: relative; z-index: 200;
 }
 .hamburger span {
   display: block; width: 24px; height: 2px;
@@ -271,6 +274,7 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
 @media (max-width: 768px) {
   .hamburger { display: flex; }
 
+  /* nav-menu is moved to <body> by script.js, so z-index is now global */
   .nav-menu {
     position: fixed;
     top: 0;
@@ -289,11 +293,6 @@ h1,h2,h3,h4,h5 { font-family: var(--font-body); line-height: 1.2; color: var(--t
     pointer-events: none;
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -8px 0 60px rgba(0,0,0,0.95);
-    /* Force own GPU compositing layer — always paints on top */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: right;
-    isolation: isolate;
   }
   .nav-menu.active {
     right: 0;
