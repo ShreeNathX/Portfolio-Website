@@ -117,7 +117,7 @@ function OrbitalScene() {
       <div className="scene-node node-a"><span className="node-ring"><BarChart3 size={17} /></span><span>INSIGHT <b>SIGNAL FOUND</b></span></div>
       <div className="scene-node node-b"><span className="node-ring node-ring-lime"><BrainCircuit size={17} /></span><span>MODEL <b>READY</b></span></div>
       <div className="scene-node node-c"><span className="node-ring node-ring-orange"><Database size={17} /></span><span>DATA <b>CONNECTED</b></span></div>
-      <div className="python-token"><span className="python-glyph">Py</span><span>PYTHON<br />DATA TOOLS</span></div>
+      <div className="python-token"><span className="python-glyph" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path fill="#3776ab" d="M15 3h7a5 5 0 0 1 5 5v6H14a4 4 0 0 0-4 4v2H8a5 5 0 0 1-5-5V9a6 6 0 0 1 6-6h6Z"/><circle cx="18.5" cy="7.5" r="1.4" fill="#f7f7f0"/><path fill="#ffd43b" d="M17 29h-7a5 5 0 0 1-5-5v-6h13a4 4 0 0 0 4-4v-2h2a5 5 0 0 1 5 5v6a6 6 0 0 1-6 6h-6Z"/><circle cx="13.5" cy="24.5" r="1.4" fill="#f7f7f0"/></svg></span><span>PYTHON<br />DATA TOOLS</span></div>
       <div className="scene-bottom"><span>ANALYTICS <i>·</i> INTELLIGENCE <i>·</i> IMPACT</span><span>MOVE TO EXPLORE</span></div>
     </div>
   );
