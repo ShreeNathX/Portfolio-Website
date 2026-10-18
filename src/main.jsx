@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, BrainCircuit,
-  Check, ChevronDown, CircleDot, Code2, Database, Layers3, Mail, Menu,
-  Network, Sparkles, X,
+  Check, CircleDot, Code2, Database, Layers3, Mail, Menu, Network, X,
 } from 'lucide-react';
 import googleSpecialization from '../assets/Certificates/Specialization/Google Data Analytics.png';
 import mlSpecialization from '../assets/Certificates/Specialization/Machine Learning.png';
@@ -17,32 +16,32 @@ import './styles.css';
 
 const projects = [
   {
-    number: '01', title: 'Local AI Assistant', category: 'AI & ML', type: 'machine-learning',
+    title: 'Local AI Assistant', category: 'AI & ML', type: 'machine-learning', featured: true,
     description: 'A private assistant for conversation, coding, web search, and document Q&A, powered by a compact open model running locally.',
     stack: ['Python', 'Qwen 2.5', 'RAG'], repo: 'Local-AI-Assistant', live: 'https://local-ai-assistant-by-snm.streamlit.app/', color: 'lilac', image: localAiImage,
   },
   {
-    number: '02', title: 'Road Watch', category: 'Computer vision', type: 'machine-learning',
+    title: 'Road Watch', category: 'Computer vision', type: 'machine-learning', featured: true,
     description: 'A local traffic monitoring tool that detects road users, counts crossings, and exports the results for further analysis.',
     stack: ['Python', 'YOLOv8', 'OpenCV'], repo: 'Road-Watch', live: 'https://road-watch-snx.streamlit.app/', color: 'mint', image: roadWatchImage,
   },
   {
-    number: '03', title: 'LearningX', category: 'Learning platform', type: 'product',
+    title: 'LearningX', category: 'Learning platform', type: 'product',
     description: 'A browser-based practice space for Python, SQL, and data interviews, with runnable challenges and saved progress.',
     stack: ['React', 'Pyodide', 'SQLite'], repo: 'LearningX', live: 'https://ShreeNathX.github.io/LearningX/', color: 'peach', image: learningXImage,
   },
   {
-    number: '04', title: 'Handwritten Digit Prediction', category: 'Deep learning', type: 'machine-learning',
+    title: 'Handwritten Digit Prediction', category: 'Deep learning', type: 'machine-learning',
     description: 'A CNN recognizes digits drawn on a canvas, with confidence scores and a probability view for each prediction.',
     stack: ['TensorFlow', 'CNN', 'MNIST'], repo: 'Handwritten-Digit-Detection', live: 'https://handwritten-digit-detection.streamlit.app/', color: 'blue', image: digitPredictionImage,
   },
   {
-    number: '05', title: 'Retail Store Analytics', category: 'Business intelligence', type: 'analytics',
+    title: 'Retail Store Analytics', category: 'Business intelligence', type: 'analytics', featured: true,
     description: 'A SQL-to-dashboard workflow exploring sales, inventory, pricing, and promotions to support retail decisions.',
     stack: ['MySQL', 'Power BI', 'DAX'], repo: 'Retail-Store-Analytics', color: 'yellow', image: retailAnalyticsImage,
   },
   {
-    number: '06', title: 'Trust & Retention Intelligence', category: 'Predictive analytics', type: 'analytics',
+    title: 'Trust & Retention Intelligence', category: 'Predictive analytics', type: 'analytics',
     description: 'An end-to-end finance project combining customer churn prediction and credit risk scoring in an interactive app.',
     stack: ['Python', 'XGBoost', 'Streamlit'], repo: 'Trust-and-Retention-Intelligence', live: 'https://trust-and-retention-intelligence.streamlit.app', color: 'pink', image: trustRetentionImage,
   },
@@ -178,7 +177,7 @@ function PageIntro({ kicker, title, subtitle }) {
 }
 
 function HomePage() {
-  const featured = [projects[0], projects[1], projects[4]];
+  const featured = projects.filter((project) => project.featured);
   return (
     <main id="top">
       <section className="hero section-wrap">
@@ -196,7 +195,7 @@ function HomePage() {
       <section className="home-about section-wrap" id="home-about"><div className="home-about-body"><p className="eyebrow home-about-kicker">A LITTLE ABOUT ME</p><h2>Curious about what<br />the data <em>is really saying.</em></h2><p>I’m Shree Nath, a data analyst and data scientist drawn to the space where careful analysis meets useful action. I enjoy asking better questions, building thoughtful tools, and making complex ideas easier to understand.</p><a className="text-link" href="#/about">More about me <ArrowRight size={16} /></a></div><div className="about-visual" role="img" aria-label="A dimensional data science sculpture surrounded by Python, SQL, and machine learning labels"><div className="about-visual-caption"><span>DATA PRACTICE</span><span>ANALYST / SCIENTIST</span></div><div className="about-visual-stage"><div className="about-visual-orbit orbit-horizontal" /><div className="about-visual-orbit orbit-vertical" /><div className="about-visual-orbit orbit-diagonal" /><div className="about-visual-core"><span>∑</span><i /><i /><i /></div><span className="visual-chip chip-python"><Code2 size={13} /> PYTHON</span><span className="visual-chip chip-sql"><Database size={13} /> SQL</span><span className="visual-chip chip-ml"><BrainCircuit size={13} /> ML</span></div><div className="about-visual-footer"><span>QUESTION</span><i /><span>INSIGHT</span><i /><span>IMPACT</span></div></div></section>
 
       <section className="work-section section-wrap" id="featured-work"><div className="section-heading"><div><p className="eyebrow section-kicker">A FEW THINGS I’VE MADE <span className="eyebrow-divider">/</span> SELECTED WORK</p><h2>Three ways to<br /><em>follow a question.</em></h2></div><p className="section-aside">Models, tools, and<br />business intelligence.</p></div>
-        <div className="project-grid home-project-grid">{featured.map((project, index) => <ProjectCard key={project.number} project={project} index={index} />)}</div>
+        <div className="project-grid home-project-grid">{featured.map((project, index) => <ProjectCard key={project.repo} project={project} index={index} />)}</div>
         <div className="all-work-row"><span>SEE WHAT ELSE I’VE BEEN WORKING ON</span><a href="#/projects">All projects <ArrowUpRight size={16} /></a></div>
       </section>
 
@@ -233,7 +232,7 @@ function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const visibleProjects = projects.filter((project) => activeFilter === 'all' || project.type === activeFilter);
   return <main className="inner-page" id="top"><PageIntro kicker="SELECTED WORK" title={<>Questions worth<br /><em>following through.</em></>} subtitle="A mix of data analysis, machine learning, and small products built to make things clearer." />
-    <section className="projects-page-section section-wrap"><div className="project-discipline-strip" aria-label="Areas of work"><article><Database size={19} /><div><span>ANALYTICS</span><p>Find the signal in the data</p></div><div className="discipline-bars"><i /><i /><i /><i /><i /></div></article><article><BrainCircuit size={19} /><div><span>MACHINE LEARNING</span><p>Build models with purpose</p></div><div className="discipline-orbit"><i /><i /><i /></div></article><article><Code2 size={19} /><div><span>TOOLS & PRODUCTS</span><p>Make ideas useful in practice</p></div><div className="discipline-spark"><i /><i /><i /><i /></div></article></div><div className="filter-row" role="group" aria-label="Filter projects">{filterOptions.map((filter) => <button key={filter.value} className={activeFilter === filter.value ? 'filter-pill active' : 'filter-pill'} onClick={() => setActiveFilter(filter.value)}>{filter.label}<span>{String(projects.filter((project) => filter.value === 'all' || project.type === filter.value).length).padStart(2, '0')}</span></button>)}</div><div className="project-grid" key={activeFilter}>{visibleProjects.map((project, index) => <ProjectCard key={project.number} project={project} index={index} />)}</div>
+    <section className="projects-page-section section-wrap"><div className="project-discipline-strip" aria-label="Areas of work"><article><Database size={19} /><div><span>ANALYTICS</span><p>Find the signal in the data</p></div><div className="discipline-bars"><i /><i /><i /><i /><i /></div></article><article><BrainCircuit size={19} /><div><span>MACHINE LEARNING</span><p>Build models with purpose</p></div><div className="discipline-orbit"><i /><i /><i /></div></article><article><Code2 size={19} /><div><span>TOOLS & PRODUCTS</span><p>Make ideas useful in practice</p></div><div className="discipline-spark"><i /><i /><i /><i /></div></article></div><div className="filter-row" role="group" aria-label="Filter projects">{filterOptions.map((filter) => <button key={filter.value} className={activeFilter === filter.value ? 'filter-pill active' : 'filter-pill'} onClick={() => setActiveFilter(filter.value)}>{filter.label}<span>{String(projects.filter((project) => filter.value === 'all' || project.type === filter.value).length).padStart(2, '0')}</span></button>)}</div><div className="project-grid" key={activeFilter}>{visibleProjects.map((project, index) => <ProjectCard key={project.repo} project={project} index={index} />)}</div>
     <div className="project-note"><span className="eyebrow">A NOTE ON IMAGES</span><p>Each preview is a ready-to-replace image frame. Drop a project screenshot into the matching card when you’re ready.</p></div></section></main>;
 }
 
@@ -262,13 +261,14 @@ function ContactForm() {
       email: String(data.get('email') || '').trim(),
       requestType: String(data.get('requestType') || ''),
       message: String(data.get('message') || '').trim(),
+      website: String(data.get('website') || '').trim(),
     };
     setSending(true);
     setStatus({ type: '', message: '' });
     try {
       await fetch(contactSheetUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
       form.reset();
-      setStatus({ type: 'success', message: 'Thanks for reaching out. Your message has been sent.' });
+      setStatus({ type: 'success', message: 'Request submitted. Email me directly if you need delivery confirmation.' });
     } catch {
       setStatus({ type: 'error', message: 'The message could not be sent. Please email me at shreenath.ventures17@gmail.com.' });
     } finally {
@@ -277,6 +277,7 @@ function ContactForm() {
   }
   return <form className="contact-form" onSubmit={handleSubmit}>
     <div className="contact-form-heading"><span>LET’S START A CONVERSATION</span><Code2 size={18} /></div>
+    <div className="contact-honeypot" aria-hidden="true"><label>Leave this field empty<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label></div>
     <div className="form-name-row"><label>First name<input name="firstName" autoComplete="given-name" placeholder="Your first name" required /></label><label>Last name<input name="lastName" autoComplete="family-name" placeholder="Your last name" required /></label></div>
     <label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label>
     <label>What would you like to discuss?<select name="requestType" defaultValue="" required><option value="" disabled>Select a topic</option><option>Data project</option><option>Job opportunity</option><option>Collaboration</option><option>Something else</option></select></label>
