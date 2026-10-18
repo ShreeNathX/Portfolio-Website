@@ -2,6 +2,8 @@
 
 A static, multi-page React portfolio built with Vite. The site includes Home, About, Projects, and Certifications pages. Project and credential content is maintained in `src/main.jsx`; styles are in `src/styles.css`; image assets live in `assets/`.
 
+**Live portfolio:** [shreenathx.github.io/Portfolio-Website](https://shreenathx.github.io/Portfolio-Website/)
+
 ## Local development
 
 Use Node.js 20.19 or newer, or 22.12 or newer.
