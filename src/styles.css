@@ -351,11 +351,11 @@ body{font-size:16px}
 .chip-python{left:2%;top:23%}.chip-sql{right:3%;top:31%}.chip-ml{right:14%;bottom:10%}
 .about-visual-footer{gap:8px;font-size:8px;color:#96998d}
 .about-visual-footer i{height:1px;flex:1;background:#d7dcc9}
-.project-grid .project-image.has-project-preview{position:relative;display:block;overflow:hidden;padding:0;height:auto;aspect-ratio:16/9;background:#f6f5f1}
-.project-grid .project-preview-image{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;padding:0;object-fit:cover;object-position:center;transform:none;transition:filter .3s}
+.project-grid .project-image.has-project-preview{position:relative;display:block;overflow:hidden;padding:0;height:auto;aspect-ratio:auto;background:#f6f5f1}
+.project-grid .project-preview-image{position:relative;inset:auto;display:block;width:100%;height:auto;max-width:none;padding:0;object-fit:initial;object-position:center;transform:none;transition:filter .3s}
 .project-grid .project-image:not(.has-project-preview){aspect-ratio:2/1}
 @media(max-width:700px){.wordmark-name{font-size:12px}}
-/* Keep project preview frames consistent in both grids. */
+/* Keep image frames at each screenshot's natural aspect ratio in both grids. */
 .project-card:hover .project-preview-image{filter:saturate(1.05)}
 .contact-honeypot{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .has-project-preview .image-shape{display:none}
