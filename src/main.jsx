@@ -254,9 +254,10 @@ function ContactForm() {
   const [turnstileToken, setTurnstileToken] = useState('');
   const turnstileRef = useRef(null);
   const turnstileWidgetRef = useRef(null);
+  const contactFormEnabled = window.location.hostname === 'shreenathx.github.io' && Boolean(turnstileSiteKey);
 
   useEffect(() => {
-    if (!turnstileSiteKey || !turnstileRef.current) return undefined;
+    if (!contactFormEnabled || !turnstileRef.current) return undefined;
     let disposed = false;
     const renderWidget = () => {
       if (disposed || !window.turnstile || !turnstileRef.current || turnstileWidgetRef.current !== null) return;
@@ -287,12 +288,12 @@ function ContactForm() {
         turnstileWidgetRef.current = null;
       }
     };
-  }, []);
+  }, [contactFormEnabled]);
 
   async function handleSubmit(event) {
     event.preventDefault();
     if (!event.currentTarget.reportValidity()) return;
-    if (!turnstileSiteKey || !turnstileToken) {
+    if (!contactFormEnabled || !turnstileToken) {
       setStatus({ type: 'error', message: 'Complete the security check before sending.' });
       return;
     }
@@ -312,8 +313,7 @@ function ContactForm() {
     setStatus({ type: '', message: '' });
     try {
       await fetch(contactSheetUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-      form.reset();
-      setStatus({ type: 'success', message: 'Submission sent to the contact service. Your browser cannot confirm delivery; email me directly if this is time-sensitive.' });
+      setStatus({ type: 'pending', message: 'Request submitted, but this site cannot confirm it was saved to the Sheet. Your entries are still here. Check the Sheet before retrying to avoid duplicates.' });
     } catch {
       setStatus({ type: 'error', message: 'The message could not be sent. Please email me at shreenath.ventures17@gmail.com.' });
     } finally {
@@ -325,13 +325,13 @@ function ContactForm() {
   return <form className="contact-form" onSubmit={handleSubmit}>
     <div className="contact-form-heading"><span>LET’S START A CONVERSATION</span><Code2 size={18} /></div>
     <div className="contact-honeypot" aria-hidden="true"><label>Leave this field empty<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label></div>
-    <div className="form-name-row"><label>First name<input name="firstName" autoComplete="given-name" placeholder="Your first name" required /></label><label>Last name<input name="lastName" autoComplete="family-name" placeholder="Your last name" required /></label></div>
-    <label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label>
+    <div className="form-name-row"><label>First name<input name="firstName" autoComplete="given-name" maxLength={80} placeholder="Your first name" required /></label><label>Last name<input name="lastName" autoComplete="family-name" maxLength={80} placeholder="Your last name" required /></label></div>
+    <label>Email address<input name="email" type="email" autoComplete="email" maxLength={254} placeholder="you@example.com" required /></label>
     <label>What would you like to discuss?<select name="requestType" defaultValue="" required><option value="" disabled>Select a topic</option><option>Data project</option><option>Job opportunity</option><option>Collaboration</option><option>Something else</option></select></label>
-    <label>Your message<textarea name="message" rows="4" placeholder="A little about what you have in mind..." required /></label>
-    {turnstileSiteKey ? <div className="turnstile-wrap"><div ref={turnstileRef} /><span className="turnstile-help">Complete this security check to send your message.</span></div> : <p className="form-security-note" role="status">The contact form is being secured. Please email <a href="mailto:shreenath.ventures17@gmail.com">shreenath.ventures17@gmail.com</a> for now.</p>}
-    <div className="form-submit-row"><button type="submit" className="button button-lime" disabled={sending || !turnstileSiteKey || !turnstileToken}>{sending ? 'Sending…' : 'Send message'} <ArrowUpRight size={17} /></button><span className={`form-status ${status.type}`} role="status" aria-live="polite">{status.message}</span></div>
-    <p className="form-privacy-note">{turnstileSiteKey ? 'Your message is sent to my portfolio contact sheet.' : 'The contact form will be available after security setup is complete.'}</p>
+    <label>Your message<textarea name="message" rows="4" minLength={10} maxLength={5000} placeholder="A little about what you have in mind... (at least 10 characters)" required /></label>
+    {contactFormEnabled ? <div className="turnstile-wrap"><div ref={turnstileRef} /><span className="turnstile-help">Complete this security check to send your message.</span></div> : <p className="form-security-note" role="status">Contact form submissions are enabled on the live portfolio only. <a href="https://shreenathx.github.io/Portfolio-Website/#contact">Open the live contact form</a> or email <a href="mailto:shreenath.ventures17@gmail.com">shreenath.ventures17@gmail.com</a>.</p>}
+    <div className="form-submit-row"><button type="submit" className="button button-lime" disabled={sending || !contactFormEnabled || !turnstileToken}>{sending ? 'Sending…' : 'Send message'} <ArrowUpRight size={17} /></button><span className={`form-status ${status.type}`} role="status" aria-live="polite">{status.message}</span></div>
+    <p className="form-privacy-note">{contactFormEnabled ? 'Your browser cannot confirm whether the message reached my contact sheet. Email me directly if it is time-sensitive.' : 'Use the live portfolio link above to submit a message to the contact sheet.'}</p>
   </form>;
 }
 

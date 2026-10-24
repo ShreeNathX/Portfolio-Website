@@ -1,3 +1,7 @@
+function doGet() {
+  return jsonResponse({ result: 'ready' });
+}
+
 function doPost(event) {
   try {
     var data = JSON.parse(event && event.postData && event.postData.contents || '{}');
@@ -65,7 +69,10 @@ function verifyTurnstile(token) {
   if (typeof token !== 'string' || !token || token.length > 2048) return false;
 
   var secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET_KEY');
-  if (!secret) return false;
+  if (!secret) {
+    console.error('TURNSTILE_SECRET_KEY is not configured.');
+    return false;
+  }
 
   try {
     var response = UrlFetchApp.fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
@@ -76,8 +83,11 @@ function verifyTurnstile(token) {
     if (response.getResponseCode() !== 200) return false;
 
     var result = JSON.parse(response.getContentText());
-    return result.success === true &&
-      result.hostname === 'shreenathx.github.io' &&
+    if (result.success !== true) {
+      console.error('Turnstile rejected the token: ' + (result['error-codes'] || []).join(', '));
+      return false;
+    }
+    return result.hostname === 'shreenathx.github.io' &&
       result.action === 'contact';
   } catch (error) {
     console.error(error);
