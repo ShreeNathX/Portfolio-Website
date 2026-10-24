@@ -257,7 +257,6 @@ function ContactForm() {
     const form = event.currentTarget;
     const data = new FormData(form);
     const payload = {
-      timestamp: new Date().toISOString(),
       firstName: String(data.get('firstName') || '').trim(),
       lastName: String(data.get('lastName') || '').trim(),
       email: String(data.get('email') || '').trim(),
