@@ -243,8 +243,11 @@ body{font-size:16px}
 .contact-form select option{color:#f2f2ec;background:#252822}
 .contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{border-color:#d8ff65;box-shadow:0 0 0 2px #d8ff6520}
 .form-submit-row{display:flex;align-items:center;gap:15px;margin-top:1px}
+.turnstile-wrap{display:grid;gap:8px;margin-top:4px}
+.turnstile-help,.form-security-note{color:var(--muted);font-size:14px;line-height:1.5}
+.form-security-note a{color:var(--ink);text-underline-offset:3px}
 .form-submit-row .button{border:0;cursor:pointer;white-space:nowrap}
-.form-submit-row .button:disabled{opacity:.65;cursor:wait;transform:none}
+.form-submit-row .button:disabled{opacity:.65;cursor:not-allowed;transform:none}
 .form-status{font-size:12px;line-height:1.55;color:#c4d99a}
 .form-status:not(:empty){max-width:260px}
 .form-status.error{color:#f2a5a5}

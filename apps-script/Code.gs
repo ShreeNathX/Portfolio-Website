@@ -6,6 +6,10 @@ function doPost(event) {
       return jsonResponse({ result: 'accepted' });
     }
 
+    if (!verifyTurnstile(data.turnstileToken)) {
+      return jsonResponse({ result: 'verification_failed' });
+    }
+
     var message = validateMessage(data);
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     if (!sheet) throw new Error('No active sheet is available.');
@@ -54,6 +58,30 @@ function doPost(event) {
   } catch (error) {
     console.error(error);
     return jsonResponse({ result: 'error' });
+  }
+}
+
+function verifyTurnstile(token) {
+  if (typeof token !== 'string' || !token || token.length > 2048) return false;
+
+  var secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET_KEY');
+  if (!secret) return false;
+
+  try {
+    var response = UrlFetchApp.fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'post',
+      payload: { secret: secret, response: token },
+      muteHttpExceptions: true,
+    });
+    if (response.getResponseCode() !== 200) return false;
+
+    var result = JSON.parse(response.getContentText());
+    return result.success === true &&
+      result.hostname === 'shreenathx.github.io' &&
+      result.action === 'contact';
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 }
 

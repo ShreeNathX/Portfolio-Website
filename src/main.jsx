@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, BarChart3, BrainCircuit,
@@ -246,13 +246,56 @@ function CertificationsPage() {
 }
 
 const contactSheetUrl = 'https://script.google.com/macros/s/AKfycbxAmXqgte7eeS5ImPZsp7r5AiF8jRnJYPYFWnvrVbd9WWYpwo8YzoFWQw5fAlhMJ4ahDg/exec';
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
 
 function ContactForm() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [sending, setSending] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef(null);
+  const turnstileWidgetRef = useRef(null);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || !turnstileRef.current) return undefined;
+    let disposed = false;
+    const renderWidget = () => {
+      if (disposed || !window.turnstile || !turnstileRef.current || turnstileWidgetRef.current !== null) return;
+      turnstileWidgetRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: turnstileSiteKey,
+        action: 'contact',
+        theme: 'light',
+        callback: (token) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      });
+    };
+    const existingScript = document.querySelector('script[data-turnstile]');
+    const script = existingScript || document.createElement('script');
+    script.addEventListener('load', renderWidget);
+    if (!existingScript) {
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.dataset.turnstile = 'true';
+      document.head.appendChild(script);
+    }
+    renderWidget();
+    return () => {
+      disposed = true;
+      script.removeEventListener('load', renderWidget);
+      if (turnstileWidgetRef.current !== null && window.turnstile) {
+        window.turnstile.remove(turnstileWidgetRef.current);
+        turnstileWidgetRef.current = null;
+      }
+    };
+  }, []);
+
   async function handleSubmit(event) {
     event.preventDefault();
     if (!event.currentTarget.reportValidity()) return;
+    if (!turnstileSiteKey || !turnstileToken) {
+      setStatus({ type: 'error', message: 'Complete the security check before sending.' });
+      return;
+    }
     const form = event.currentTarget;
     const data = new FormData(form);
     const payload = {
@@ -263,16 +306,19 @@ function ContactForm() {
       requestType: String(data.get('requestType') || ''),
       message: String(data.get('message') || '').trim(),
       website: String(data.get('website') || '').trim(),
+      turnstileToken,
     };
     setSending(true);
     setStatus({ type: '', message: '' });
     try {
       await fetch(contactSheetUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
       form.reset();
-      setStatus({ type: 'success', message: 'Request submitted. Email me directly if you need delivery confirmation.' });
+      setStatus({ type: 'success', message: 'Submission sent to the contact service. Your browser cannot confirm delivery; email me directly if this is time-sensitive.' });
     } catch {
       setStatus({ type: 'error', message: 'The message could not be sent. Please email me at shreenath.ventures17@gmail.com.' });
     } finally {
+      setTurnstileToken('');
+      if (turnstileWidgetRef.current !== null && window.turnstile) window.turnstile.reset(turnstileWidgetRef.current);
       setSending(false);
     }
   }
@@ -283,8 +329,9 @@ function ContactForm() {
     <label>Email address<input name="email" type="email" autoComplete="email" placeholder="you@example.com" required /></label>
     <label>What would you like to discuss?<select name="requestType" defaultValue="" required><option value="" disabled>Select a topic</option><option>Data project</option><option>Job opportunity</option><option>Collaboration</option><option>Something else</option></select></label>
     <label>Your message<textarea name="message" rows="4" placeholder="A little about what you have in mind..." required /></label>
-    <div className="form-submit-row"><button type="submit" className="button button-lime" disabled={sending}>{sending ? 'Sending…' : 'Send message'} <ArrowUpRight size={17} /></button><span className={`form-status ${status.type}`} role="status" aria-live="polite">{status.message}</span></div>
-    <p className="form-privacy-note">Your message is sent to my portfolio contact sheet.</p>
+    {turnstileSiteKey ? <div className="turnstile-wrap"><div ref={turnstileRef} /><span className="turnstile-help">Complete this security check to send your message.</span></div> : <p className="form-security-note" role="status">The contact form is being secured. Please email <a href="mailto:shreenath.ventures17@gmail.com">shreenath.ventures17@gmail.com</a> for now.</p>}
+    <div className="form-submit-row"><button type="submit" className="button button-lime" disabled={sending || !turnstileSiteKey || !turnstileToken}>{sending ? 'Sending…' : 'Send message'} <ArrowUpRight size={17} /></button><span className={`form-status ${status.type}`} role="status" aria-live="polite">{status.message}</span></div>
+    <p className="form-privacy-note">{turnstileSiteKey ? 'Your message is sent to my portfolio contact sheet.' : 'The contact form will be available after security setup is complete.'}</p>
   </form>;
 }
 
