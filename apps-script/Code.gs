@@ -1,10 +1,21 @@
 function doGet() {
-  return jsonResponse({ result: 'ready' });
+  try {
+    getContactSheet();
+    if (!PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET_KEY')) {
+      throw new Error('TURNSTILE_SECRET_KEY is not configured.');
+    }
+    return jsonResponse({ result: 'ready' });
+  } catch (error) {
+    console.error(error);
+    return jsonResponse({ result: 'setup_required' });
+  }
 }
 
 function doPost(event) {
   try {
-    var data = JSON.parse(event && event.postData && event.postData.contents || '{}');
+    var body = String(event && event.postData && event.postData.contents || '{}');
+    if (body.length > 12000) return jsonResponse({ result: 'invalid_request' });
+    var data = JSON.parse(body);
 
     if (String(data.website || '').trim()) {
       return jsonResponse({ result: 'accepted' });
@@ -15,8 +26,7 @@ function doPost(event) {
     }
 
     var message = validateMessage(data);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    if (!sheet) throw new Error('No active sheet is available.');
+    var sheet = getContactSheet();
 
     var day = Utilities.formatDate(new Date(), 'UTC', 'yyyyMMdd');
     var emailHash = hashEmail(message.email);
@@ -52,6 +62,7 @@ function doPost(event) {
         safeCell(message.requestType),
         safeCell(message.message),
       ]);
+      SpreadsheetApp.flush();
 
       properties.setProperty(globalKey, String(dailyTotal + 1));
       properties.setProperty(emailKey, String(emailTotal + 1));
@@ -63,6 +74,18 @@ function doPost(event) {
     console.error(error);
     return jsonResponse({ result: 'error' });
   }
+}
+
+function getContactSheet() {
+  var properties = PropertiesService.getScriptProperties();
+  var spreadsheetId = String(properties.getProperty('CONTACT_SPREADSHEET_ID') || '').trim();
+  if (!spreadsheetId) throw new Error('CONTACT_SPREADSHEET_ID is not configured.');
+
+  var spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  var sheetName = String(properties.getProperty('CONTACT_SHEET_NAME') || '').trim();
+  var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : spreadsheet.getSheets()[0];
+  if (!sheet) throw new Error(sheetName ? 'Configured contact sheet tab was not found.' : 'The spreadsheet has no sheets.');
+  return sheet;
 }
 
 function verifyTurnstile(token) {
@@ -80,15 +103,25 @@ function verifyTurnstile(token) {
       payload: { secret: secret, response: token },
       muteHttpExceptions: true,
     });
-    if (response.getResponseCode() !== 200) return false;
+    if (response.getResponseCode() !== 200) {
+      console.error('Turnstile Siteverify returned HTTP ' + response.getResponseCode() + '.');
+      return false;
+    }
 
     var result = JSON.parse(response.getContentText());
     if (result.success !== true) {
       console.error('Turnstile rejected the token: ' + (result['error-codes'] || []).join(', '));
       return false;
     }
-    return result.hostname === 'shreenathx.github.io' &&
-      result.action === 'contact';
+    if (result.hostname !== 'shreenathx.github.io') {
+      console.error('Turnstile hostname mismatch: ' + result.hostname);
+      return false;
+    }
+    if (result.action !== 'contact') {
+      console.error('Turnstile action mismatch: ' + result.action);
+      return false;
+    }
+    return true;
   } catch (error) {
     console.error(error);
     return false;
