@@ -1,9 +1,6 @@
 function doGet() {
   try {
     getContactSheet();
-    if (!PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET_KEY')) {
-      throw new Error('TURNSTILE_SECRET_KEY is not configured.');
-    }
     return jsonResponse({ result: 'ready' });
   } catch (error) {
     console.error(error);
@@ -19,10 +16,6 @@ function doPost(event) {
 
     if (String(data.website || '').trim()) {
       return jsonResponse({ result: 'accepted' });
-    }
-
-    if (!verifyTurnstile(data.turnstileToken)) {
-      return jsonResponse({ result: 'verification_failed' });
     }
 
     var message = validateMessage(data);
@@ -46,7 +39,7 @@ function doPost(event) {
 
       var dailyTotal = Number(properties.getProperty(globalKey)) || 0;
       var emailTotal = Number(properties.getProperty(emailKey)) || 0;
-      if (dailyTotal >= 60 || emailTotal >= 3) {
+      if (dailyTotal >= 20 || emailTotal >= 3) {
         return jsonResponse({ result: 'rate_limited' });
       }
 
@@ -86,46 +79,6 @@ function getContactSheet() {
   var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : spreadsheet.getSheets()[0];
   if (!sheet) throw new Error(sheetName ? 'Configured contact sheet tab was not found.' : 'The spreadsheet has no sheets.');
   return sheet;
-}
-
-function verifyTurnstile(token) {
-  if (typeof token !== 'string' || !token || token.length > 2048) return false;
-
-  var secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET_KEY');
-  if (!secret) {
-    console.error('TURNSTILE_SECRET_KEY is not configured.');
-    return false;
-  }
-
-  try {
-    var response = UrlFetchApp.fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'post',
-      payload: { secret: secret, response: token },
-      muteHttpExceptions: true,
-    });
-    if (response.getResponseCode() !== 200) {
-      console.error('Turnstile Siteverify returned HTTP ' + response.getResponseCode() + '.');
-      return false;
-    }
-
-    var result = JSON.parse(response.getContentText());
-    if (result.success !== true) {
-      console.error('Turnstile rejected the token: ' + (result['error-codes'] || []).join(', '));
-      return false;
-    }
-    if (result.hostname !== 'shreenathx.github.io') {
-      console.error('Turnstile hostname mismatch: ' + result.hostname);
-      return false;
-    }
-    if (result.action !== 'contact') {
-      console.error('Turnstile action mismatch: ' + result.action);
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
 }
 
 function validateMessage(data) {

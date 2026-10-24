@@ -1,21 +1,22 @@
-# Contact form deployment
+# Contact form setup
 
-The portfolio is static. Its Google Apps Script deployment is a separate service, so this source must be installed and redeployed in the bound Apps Script project before the server-side controls are active.
+The portfolio frontend is static. It sends contact form submissions to this Google Apps Script web app, which performs validation and writes accepted messages to Google Sheets. No CAPTCHA service is used.
 
-1. Open the Google Sheet used by the contact form and select **Extensions → Apps Script**.
-2. Replace the existing handler with `Code.gs` from this folder and save it.
-3. In **Project Settings → Script Properties**, add `CONTACT_SPREADSHEET_ID` with the ID from the Sheet URL (the text between `/d/` and `/edit`). Optionally add `CONTACT_SHEET_NAME` with the exact tab name where messages should go. If omitted, the first tab is used.
-4. In **Deploy → Manage deployments**, edit the current web app deployment and select a new version. Keep execution set to your account and access set to anyone. Confirm the deployment URL still matches `contactSheetUrl` in `src/main.jsx`. If it changed, update that constant.
-5. Open the web app URL in a browser. It should show `{"result":"ready"}` when the spreadsheet ID, sheet tab, and Turnstile secret are configured. `{"result":"setup_required"}` means one of those settings is missing or invalid; check **Apps Script → Executions** for the specific logged reason.
+## Install and deploy
 
-The handler validates fields and allowed topics, treats the hidden `website` field as a honeypot, verifies a Cloudflare Turnstile token server-side, limits submissions to three per email and sixty total per UTC day, serializes sheet writes, and escapes formula-like user input. It uses script properties and a script lock for shared rate-limit state. The web app opens the Sheet by the configured ID because Apps Script's active spreadsheet/sheet methods are unavailable when a bound script runs as a web app. Turnstile tokens are single-use and expire after five minutes.
+1. Open the destination Google Sheet and select **Extensions → Apps Script**.
+2. Replace the project code with `Code.gs` from this folder and save it.
+3. In **Project Settings → Script Properties**, set `CONTACT_SPREADSHEET_ID` to the ID from the Sheet URL, between `/d/` and `/edit`. Optionally set `CONTACT_SHEET_NAME` to the exact destination tab name; if omitted, the first tab is used. Remove the obsolete `TURNSTILE_SECRET_KEY` property; this version does not use it.
+4. Run `doGet` from the editor once and grant the requested Google Sheets permission if prompted.
+5. Select **Deploy → Manage deployments**, edit the web app, choose **New version**, then deploy with **Execute as me** and access set to **Anyone**.
+6. Confirm the deployment URL matches `contactSheetUrl` in `src/main.jsx`. Open its `/exec` URL; the expected response is `{"result":"ready"}`. If it returns `setup_required`, check **Apps Script → Executions** and confirm the Script Property and Sheet access.
 
-## Turnstile setup
+The form is limited to 20 successful entries per UTC day and 3 per email. The backend validates field sizes and topics, ignores submissions that fill the hidden honeypot, serializes writes with a script lock, and escapes formula-like values before writing. It opens the spreadsheet by ID because active spreadsheet methods are unavailable to a bound script running as a web app.
 
-1. The existing Turnstile widget is for `shreenathx.github.io`. Its public site key is configured in `src/main.jsx`; it is expected to be visible in the built website. Optionally override it at build time with `VITE_TURNSTILE_SITE_KEY`.
-2. Because the previous secret was exposed in a screenshot, rotate it in the Cloudflare Turnstile widget settings before use.
-3. In Apps Script, open **Project Settings → Script Properties** and add the newly rotated **Secret key** as `TURNSTILE_SECRET_KEY`. This is different from the public **Site key** used in the website. Do not put the secret in the repository, website, or chat.
-4. Save and redeploy the Apps Script web app as a new version using the steps above.
-5. If submissions still do not appear, open **Apps Script → Executions** and inspect the latest `doPost` run. The logs report Turnstile error codes without logging the secret. `invalid-input-secret` means the Script Property is wrong; `missing-input-response`, `invalid-input-response`, or `timeout-or-duplicate` means the token was absent, invalid, expired, or already used. Hostname/action mismatch messages point to a Turnstile widget configuration mismatch. A successful execution should finish without an error and append a row to the configured sheet tab.
+## How to test
 
-The email link remains available as a fallback. The browser uses `no-cors`, so it cannot read the handler's response to confirm delivery. The form keeps entered values after submission and tells visitors to check the Sheet before retrying, to avoid losing a message or creating duplicates. The local preview disables submission because Turnstile only allows the configured live hostname.
+Submit a real test message from the live portfolio with a message of at least 10 characters, then confirm a new row appears in the configured tab. Check **Apps Script → Executions** if it does not. The form uses a cross-origin `no-cors` request, so the browser cannot read the Apps Script response. It keeps the entered values and explains that delivery cannot be confirmed from the page.
+
+## Abuse protection
+
+An automated client can still call the public Apps Script URL directly. The honeypot and daily/email limits reduce basic spam, but they cannot prove a request came from the portfolio or prevent a determined attacker from consuming the daily limit. For a low-volume personal portfolio, this may be an acceptable tradeoff. Stronger bot protection requires a CAPTCHA service with server-side validation or a backend proxy; a static page cannot keep a server secret.
