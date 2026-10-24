@@ -269,6 +269,7 @@ function ContactForm() {
     setStatus({ type: '', message: '' });
     try {
       await fetch(contactSheetUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+      form.reset();
       setStatus({ type: 'success', message: 'Thanks for reaching out. I’ll be in touch soon.' });
     } catch {
       setStatus({ type: 'error', message: 'The message could not be sent. Please email me at shreenath.ventures17@gmail.com.' });
