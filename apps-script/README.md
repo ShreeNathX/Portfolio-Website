@@ -11,9 +11,9 @@ The handler validates fields and allowed topics, treats the hidden `website` fie
 
 ## Turnstile setup
 
-1. Create a Cloudflare Turnstile widget for the hostname `shreenathx.github.io` and copy its site key and secret key.
-2. In the GitHub repository, add the site key as an Actions repository variable named `VITE_TURNSTILE_SITE_KEY` (Settings → Secrets and variables → Actions → Variables). The site key is public and is embedded in the static build.
-3. In Apps Script, open **Project Settings → Script Properties** and add `TURNSTILE_SECRET_KEY` with the secret key. Do not put this secret in the repository or the website.
-4. Save and redeploy the Apps Script web app as a new version using the steps above, then rerun the GitHub Pages workflow so the site key is included.
+1. The existing Turnstile widget is for `shreenathx.github.io`. Its public site key is configured in `src/main.jsx`; it is expected to be visible in the built website. Optionally override it at build time with `VITE_TURNSTILE_SITE_KEY`.
+2. Because the previous secret was exposed in a screenshot, rotate it in the Cloudflare Turnstile widget settings before use.
+3. In Apps Script, open **Project Settings → Script Properties** and add the newly rotated secret as `TURNSTILE_SECRET_KEY`. Do not put this secret in the repository, website, or chat.
+4. Save and redeploy the Apps Script web app as a new version using the steps above. The handler accepts POST requests; opening `/exec` in a browser may report that `doGet` is missing, which is expected.
 
-Until both keys are configured and the Apps Script deployment is updated, the form stays disabled and directs visitors to email instead. The browser uses `no-cors`, so it cannot read the handler's response to confirm delivery.
+The email link remains available as a fallback. The browser uses `no-cors`, so it cannot read the handler's response to confirm delivery; the form reports that the request was sent to the contact service without claiming the Sheet write succeeded.

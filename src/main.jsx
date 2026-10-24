@@ -245,8 +245,8 @@ function CertificationsPage() {
     </section></main>;
 }
 
-const contactSheetUrl = 'https://script.google.com/macros/s/AKfycbxAmXqgte7eeS5ImPZsp7r5AiF8jRnJYPYFWnvrVbd9WWYpwo8YzoFWQw5fAlhMJ4ahDg/exec';
-const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
+const contactSheetUrl = 'https://script.google.com/macros/s/AKfycbySBLICsM3-obZ3ce4Bj-Ym41zq_V4nKwsREegF3ERpgb1Q9ueQ-eQrcykwjeIPnJI1Gw/exec';
+const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAAFkHSBpc95t-z1xA';
 
 function ContactForm() {
   const [status, setStatus] = useState({ type: '', message: '' });
