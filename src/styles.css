@@ -434,3 +434,4 @@ body{font-size:16px}
 @media(min-width:951px) and (max-width:1150px){
  .about-story{grid-template-columns:minmax(0,1fr) 280px;column-gap:48px}
 }
+.section-heading h2.featured-projects-heading{font-size:clamp(32px,6vw,82px);white-space:nowrap}
