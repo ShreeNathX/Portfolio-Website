@@ -249,6 +249,7 @@ body{font-size:16px}
 .form-status:not(:empty){max-width:260px}
 .form-status.error{color:#f2a5a5}
 .form-privacy-note{font-size:11px;color:#a8aaa1;line-height:1.5;margin:0}
+.form-privacy-note a{color:#d8ff65;text-decoration:underline;text-underline-offset:2px}
 
 @media(max-width:1050px){
  .contact-section .contact-inner{grid-template-columns:minmax(0,.8fr) minmax(360px,1.2fr);gap:34px}
